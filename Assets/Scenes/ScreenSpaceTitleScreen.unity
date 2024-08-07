@@ -3002,6 +3002,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!4 &1419455695 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5239100585477912294, guid: f2e0b7ae4dae8cf44955bccd3512b213, type: 3}
+  m_PrefabInstance: {fileID: 1811861691}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1439963316
 GameObject:
   m_ObjectHideFlags: 0
@@ -3988,6 +3993,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5241267463746980526, guid: f2e0b7ae4dae8cf44955bccd3512b213, type: 3}
   m_PrefabInstance: {fileID: 1811861691}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1769505936 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5269945355364510514, guid: f2e0b7ae4dae8cf44955bccd3512b213, type: 3}
+  m_PrefabInstance: {fileID: 1811861691}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769505935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fca36bd81de7c4cafce7bbf02ca611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1769505940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769505935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48e49f842d3d0cc4d8bbd2adce8e1bed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 32
+  crouchAnimationDuration: 1
+  headToLower: {fileID: 1419455695}
+  minCrouchYHeadPosition: 0.5
+  movement: {fileID: 1769505936}
+  minMoveSpeed: 2
+  maxJumpPower: 2
+  minJumpPower: 0.25
 --- !u!1 &1810987515
 GameObject:
   m_ObjectHideFlags: 0
@@ -4185,7 +4221,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5241267463746980526, guid: f2e0b7ae4dae8cf44955bccd3512b213, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1769505940}
   m_SourcePrefab: {fileID: 100100000, guid: f2e0b7ae4dae8cf44955bccd3512b213, type: 3}
 --- !u!1 &1842622463
 GameObject:
