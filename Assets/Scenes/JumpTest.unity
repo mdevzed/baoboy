@@ -783,7 +783,7 @@ MonoBehaviour:
   headToLower: {fileID: 1419455695}
   minCrouchYHeadPosition: 0.5
   movement: {fileID: 1769505936}
-  minMoveSpeed: 2
+  minMoveSpeed: 1.03
   maxJumpPower: 2
   minJumpPower: 0.25
 --- !u!1001 &1811861691

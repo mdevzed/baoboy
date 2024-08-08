@@ -45,18 +45,10 @@ public class CrouchJump : MonoBehaviour
         IsCrouched = false;
 
         defaultHeadYLocalPosition = headToLower.localPosition.y;
-        defaultMovementSpeed = movement.speed;
+        jumpPower = minJumpPower;  
 
-        jumpPower = minJumpPower;
-
-
+        //probably won't change with any pickups
         headYChangePerSecond = (minCrouchYHeadPosition - defaultHeadYLocalPosition)/ crouchAnimationDuration;
-        moveSpeedChangePerSecond = (minMoveSpeed - defaultMovementSpeed) / crouchAnimationDuration;
-        jumpPowerChangePerSecond = (minJumpPower - maxJumpPower) / crouchAnimationDuration;
-       
-        print(headYChangePerSecond);
-        print(moveSpeedChangePerSecond);
-        print(jumpPowerChangePerSecond);    
     }
 
     void Reset()
@@ -68,6 +60,7 @@ public class CrouchJump : MonoBehaviour
 
     void LateUpdate()
     {
+       // Debug.Log($"Movement Speed at start of LateUpdate: {movementSpeed}"); // Log at the beginning
         if (Input.GetKey(key))
         {
             // Set IsCrouched state.
@@ -75,11 +68,18 @@ public class CrouchJump : MonoBehaviour
             if (!IsCrouched)
             {
                 IsCrouched = true;
+                SetSpeedOverrideActive(true);
                 CrouchStart?.Invoke();
+
                 crouchStartTime = Time.time;
                 crouchEndTime = crouchStartTime + crouchAnimationDuration;
-                jumpPower = minJumpPower;
-                headYChangePerSecond = (minCrouchYHeadPosition - defaultHeadYLocalPosition)/ crouchAnimationDuration;
+
+                if (defaultMovementSpeed != movement.speed)
+                {
+                    defaultMovementSpeed = movement.speed;
+                    movementSpeed = movement.speed;
+                }
+                //These are updated here incase of a pickup modifying their values. 
                 moveSpeedChangePerSecond = (minMoveSpeed - defaultMovementSpeed) / crouchAnimationDuration;
                 jumpPowerChangePerSecond = (minJumpPower - maxJumpPower) / crouchAnimationDuration;
             }
@@ -96,13 +96,12 @@ public class CrouchJump : MonoBehaviour
 
                 if (movement)
                 {
-                    float newMovementSpeed = Mathf.Clamp(movement.speed + moveSpeedChangePerSecond * Time.deltaTime, minMoveSpeed, defaultMovementSpeed);
-                    movement.speed = newMovementSpeed;
+                    float newMovementSpeed = Mathf.Clamp(movementSpeed + moveSpeedChangePerSecond * Time.deltaTime, minMoveSpeed, defaultMovementSpeed);
+                    movementSpeed = newMovementSpeed;
                 }
 
                 jumpPower = Mathf.Clamp(jumpPower + jumpPowerChangePerSecond * Time.deltaTime, minJumpPower, maxJumpPower);
             }
-
         }
         else
         {
@@ -116,12 +115,49 @@ public class CrouchJump : MonoBehaviour
                 if (movement)
                 {
                     movement.speed = defaultMovementSpeed;
+                    movementSpeed = minMoveSpeed;
                 }
+
+                jumpPower = minJumpPower;
+
                 // Reset IsCrouched.
                 IsCrouched = false;
+                SetSpeedOverrideActive(false);
                 CrouchEnd?.Invoke();
             }
         }
     }
+
+    #region Speed override.
+    void SetSpeedOverrideActive(bool state)
+    {
+        // Stop if there is no movement component.
+        if(!movement)
+        {
+            return;
+        }
+
+        // Update SpeedOverride.
+        if (state)
+        {
+            // Try to add the SpeedOverride to the movement component.
+            if (!movement.speedOverrides.Contains(SpeedOverride))
+            {
+                movement.speedOverrides.Add(SpeedOverride);
+            }
+        }
+        else
+        {
+            // Try to remove the SpeedOverride from the movement component.
+            if (movement.speedOverrides.Contains(SpeedOverride))
+            {
+                movement.speedOverrides.Remove(SpeedOverride);
+            }
+        }
+    }
+
+    float SpeedOverride() => movementSpeed;
+    #endregion
 }
+
     
