@@ -86,21 +86,17 @@ public class CrouchJump : MonoBehaviour
 
             if(Time.time < crouchEndTime)
             {
-                // Enforce a low head.
-                if (headToLower)
-                {
-                    // Lower the head, but clamp it to the minimum position
-                    float newHeadYPosition = Mathf.Clamp(headToLower.localPosition.y + headYChangePerSecond * Time.deltaTime, minCrouchYHeadPosition, defaultHeadYLocalPosition);
-                    headToLower.localPosition = new Vector3(headToLower.localPosition.x, newHeadYPosition, headToLower.localPosition.z);
-                }
+                // Smoothly lower the head
+                float t = (Time.time - crouchStartTime) / crouchAnimationDuration; // Calculate normalized time
+                float newHeadYPosition = Mathf.SmoothStep(defaultHeadYLocalPosition, minCrouchYHeadPosition, t);
+                headToLower.localPosition = new Vector3(headToLower.localPosition.x, newHeadYPosition, headToLower.localPosition.z);
 
-                if (movement)
-                {
-                    float newMovementSpeed = Mathf.Clamp(movementSpeed + moveSpeedChangePerSecond * Time.deltaTime, minMoveSpeed, defaultMovementSpeed);
-                    movementSpeed = newMovementSpeed;
-                }
+                // Smoothly decrease movement speed
+                float newMovementSpeed = Mathf.SmoothStep(defaultMovementSpeed, minMoveSpeed, t);
+                movementSpeed = newMovementSpeed;
 
-                jumpPower = Mathf.Clamp(jumpPower + jumpPowerChangePerSecond * Time.deltaTime, minJumpPower, maxJumpPower);
+                // Smoothly increase jump power
+                jumpPower = Mathf.SmoothStep(maxJumpPower, minJumpPower, t); 
             }
         }
         else

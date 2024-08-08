@@ -779,12 +779,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: 32
-  crouchAnimationDuration: 1
+  crouchAnimationDuration: 1.5
   headToLower: {fileID: 1419455695}
-  minCrouchYHeadPosition: 0.5
+  minCrouchYHeadPosition: 0.35
   movement: {fileID: 1769505936}
-  minMoveSpeed: 1.03
-  maxJumpPower: 2
+  minMoveSpeed: 0.5
+  maxJumpPower: 5
   minJumpPower: 0.25
 --- !u!1001 &1811861691
 PrefabInstance:
