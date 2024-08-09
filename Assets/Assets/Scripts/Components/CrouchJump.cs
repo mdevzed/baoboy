@@ -4,12 +4,11 @@ public class CrouchJump : MonoBehaviour
 {
     public KeyCode key = KeyCode.Space;
 
-    [Header("Crouch Length")]
+    [Header("Crouch Duration")]
     [Tooltip("How long it will take before fully crouched.")]
     public float crouchAnimationDuration = 5f;
     float crouchStartTime;
     float crouchEndTime;
-
 
     [Header("Head Lowering")]
     [Tooltip("Player head")]
@@ -31,10 +30,10 @@ public class CrouchJump : MonoBehaviour
     public float maxJumpPower = 2;
     [Tooltip("Minimum jump power when crouched.")]
     public float minJumpPower = 0.25f;
-    float jumpPower;
-    float jumpPowerChangePerSecond;
-    float headYChangePerSecond;
-    float moveSpeedChangePerSecond;
+    [HideInInspector]
+    public float jumpPower;
+
+    GroundCheck groundCheck;
 
     public bool IsCrouched { get; private set; }
     public event System.Action CrouchStart, CrouchEnd;
@@ -46,9 +45,6 @@ public class CrouchJump : MonoBehaviour
 
         defaultHeadYLocalPosition = headToLower.localPosition.y;
         jumpPower = minJumpPower;  
-
-        //probably won't change with any pickups
-        headYChangePerSecond = (minCrouchYHeadPosition - defaultHeadYLocalPosition)/ crouchAnimationDuration;
     }
 
     void Reset()
@@ -56,6 +52,7 @@ public class CrouchJump : MonoBehaviour
         // Try to get components.
         movement = GetComponentInParent<FirstPersonMovement>();
         headToLower = movement.GetComponentInChildren<Camera>().transform;
+        groundCheck = GetComponentInChildren<GroundCheck>();
     }
 
     void LateUpdate()
@@ -79,10 +76,9 @@ public class CrouchJump : MonoBehaviour
                     defaultMovementSpeed = movement.speed;
                     movementSpeed = movement.speed;
                 }
-                //These are updated here incase of a pickup modifying their values. 
-                moveSpeedChangePerSecond = (minMoveSpeed - defaultMovementSpeed) / crouchAnimationDuration;
-                jumpPowerChangePerSecond = (minJumpPower - maxJumpPower) / crouchAnimationDuration;
-            }
+
+                jumpPower = minJumpPower;
+                }
 
             if(Time.time < crouchEndTime)
             {
@@ -96,12 +92,12 @@ public class CrouchJump : MonoBehaviour
                 movementSpeed = newMovementSpeed;
 
                 // Smoothly increase jump power
-                jumpPower = Mathf.SmoothStep(maxJumpPower, minJumpPower, t); 
+                jumpPower = Mathf.SmoothStep(minJumpPower, maxJumpPower, t); 
             }
         }
         else
         {
-            if (IsCrouched)
+            if (IsCrouched && (!groundCheck || groundCheck.isGrounded))
             {
                 // Rise the head back up.
                 if (headToLower)
@@ -113,9 +109,6 @@ public class CrouchJump : MonoBehaviour
                     movement.speed = defaultMovementSpeed;
                     movementSpeed = minMoveSpeed;
                 }
-
-                jumpPower = minJumpPower;
-
                 // Reset IsCrouched.
                 IsCrouched = false;
                 SetSpeedOverrideActive(false);
